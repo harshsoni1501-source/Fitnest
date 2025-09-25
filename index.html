@@ -1,48 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FitNest - Home</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNest - Homegrown Fashion Marketplace</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Navbar -->
   <header>
-    <nav>
-      <h1 class="logo">FitNest</h1>
-      <ul>
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="shop.html">Shop</a></li>
-        <li><a href="sellers.html">For Sellers</a></li>
-        <li><a href="contact.html">Contact</a></li>
+    <nav class="navbar">
+      <div class="logo">FitNest</div>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#sellers">For Sellers</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
       </ul>
+      <div class="hamburger">☰</div>
     </nav>
   </header>
 
+  <!-- Hero Section -->
   <section class="hero">
-    <h2>Affordable Fashion Under One Roof</h2>
-    <p>Connecting fashion geeks with homegrown brands.</p>
-    <a href="shop.html" class="btn">Shop Now</a>
-  </section>
-
-  <section class="highlights">
-    <div>
-      <h3>Exclusive Collection</h3>
-      <p>Limited edition clothing from small quality brands.</p>
-    </div>
-    <div>
-      <h3>Easy Ordering</h3>
-      <p>Browse diverse options with all sizes & charts available.</p>
-    </div>
-    <div>
-      <h3>Empowering Sellers</h3>
-      <p>Helping local brands go digital with ease.</p>
+    <div class="hero-content">
+      <h1>Affordable Fashion Under One Roof</h1>
+      <p>Discover clothes, accessories, and home-grown brands all in one place.</p>
+      <a href="#shop" class="btn">Shop Now</a>
     </div>
   </section>
 
+  <!-- Featured Products -->
+  <section id="shop" class="products">
+    <h2>Featured Products</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="https://via.placeholder.com/200" alt="Product 1" />
+        <h3>Classic T-Shirt</h3>
+        <p>₹799</p>
+        <button>Add to Cart</button>
+      </div>
+      <div class="product-card">
+        <img src="https://via.placeholder.com/200" alt="Product 2" />
+        <h3>Stylish Sneakers</h3>
+        <p>₹1999</p>
+        <button>Add to Cart</button>
+      </div>
+      <div class="product-card">
+        <img src="https://via.placeholder.com/200" alt="Product 3" />
+        <h3>Leather Wallet</h3>
+        <p>₹1199</p>
+        <button>Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="why">
+    <h2>Why Choose FitNest?</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <h3>✔ Authentic Brands</h3>
+        <p>We empower home-grown labels with a platform to shine.</p>
+      </div>
+      <div class="why-card">
+        <h3>✔ Secure Payments</h3>
+        <p>Trusted gateways to ensure safe and quick checkout.</p>
+      </div>
+      <div class="why-card">
+        <h3>✔ Easy Returns</h3>
+        <p>Hassle-free returns and customer-friendly policies.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- For Sellers -->
+  <section id="sellers" class="sellers">
+    <h2>For Sellers</h2>
+    <p>Join FitNest and bring your home-grown brand to thousands of new customers.</p>
+    <div class="steps">
+      <div>1️⃣ Sign Up</div>
+      <div>2️⃣ Upload Products</div>
+      <div>3️⃣ Start Selling</div>
+    </div>
+    <a href="#contact" class="btn">Become a Seller</a>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="about">
+    <h2>About FitNest</h2>
+    <p>FitNest is more than just an e-commerce site. We aim to showcase the creativity of local brands while giving customers access to trendy, affordable fashion.</p>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact">
+    <h2>Contact Us</h2>
+    <p>Email: support@fitnest.com | Phone: +91 98765 43210</p>
+  </section>
+
+  <!-- Footer -->
   <footer>
-    <p>© 2025 FitNest | All Rights Reserved</p>
+    <p>© 2025 FitNest | Made with ❤️ for Homegrown Brands</p>
+    <div class="socials">
+      <a href="#">Instagram</a> | <a href="#">Facebook</a> | <a href="#">Twitter</a>
+    </div>
   </footer>
+
+  <script>
+    // Mobile Menu Toggle
+    const hamburger = document.querySelector(".hamburger");
+    const navLinks = document.querySelector(".nav-links");
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("open");
+    });
+  </script>
 </body>
 </html>
