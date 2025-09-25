@@ -1,33 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About - FitNest</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header>
-    <nav>
-      <h1 class="logo">FitNest</h1>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html" class="active">About</a></li>
-        <li><a href="shop.html">Shop</a></li>
-        <li><a href="sellers.html">For Sellers</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
+<!-- NAVIGATION -->
+<header class="navbar">
+  <div class="nav-container">
+    <a href="/" class="nav-logo">Fitnest</a>
+    <nav class="nav-menu">
+      <a href="#shop" class="nav-item">Shop</a>
+      <a href="#about" class="nav-item">About</a>
+      <a href="#contact" class="nav-item">Contact</a>
     </nav>
-  </header>
+    <div class="nav-cart">
+      <a href="/cart">Cart(0)</a>
+    </div>
+  </div>
+</header>
 
-  <section class="content">
-    <h2>About Us</h2>
-    <p>FitNest is a multi-brand fashion e-commerce platform that brings affordable and diverse apparel under one roof. We empower small and homegrown brands to sell their products online effortlessly.</p>
-    <p>Our mission is to simplify shopping, encourage inclusivity, and connect fashion enthusiasts with unique creators.</p>
-  </section>
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Affordable Fashion Under One Roof</h1>
+    <p class="hero-text">Connecting fashion geeks with homegrown brands</p>
+    <a href="#shop" class="btn-primary">Shop Now</a>
+  </div>
+</section>
 
-  <footer>
-    <p>© 2025 FitNest | All Rights Reserved</p>
-  </footer>
-</body>
-</html>
+<!-- CATEGORIES GRID -->
+<section class="categories">
+  <div class="category-card">
+    <img src="/images/men.jpg" alt="Men’s Fashion">
+    <h3>Men</h3>
+  </div>
+  <div class="category-card">
+    <img src="/images/women.jpg" alt="Women’s Fashion">
+    <h3>Women</h3>
+  </div>
+  <div class="category-card">
+    <img src="/images/accessories.jpg" alt="Accessories">
+    <h3>Accessories</h3>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about" class="about-section fade-in">
+  <div class="about-image"></div>
+  <div class="about-text">
+    <h2>Our Story</h2>
+    <p>We believe every piece of clothing has a story…</p>
+    <blockquote>"Fashion is the armor to survive the reality of everyday life."</blockquote>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-container">
+    <div>
+      <h4>Shop</h4>
+      <a href="#men">Men</a>
+      <a href="#women">Women</a>
+      <a href="#accessories">Accessories</a>
+    </div>
+    <div>
+      <h4>Customer Care</h4>
+      <a href="/help">Help Center</a>
+      <a href="/returns">Returns</a>
+    </div>
+    <div>
+      <h4>About</h4>
+      <a href="#about">Our Story</a>
+      <a href="#blog">Blog</a>
+    </div>
+    <div>
+      <h4>Follow Us</h4>
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+    </div>
+  </div>
+</footer>
