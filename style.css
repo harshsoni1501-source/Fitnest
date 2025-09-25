@@ -1,113 +1,274 @@
+:root {
+  --black: #1A1A1A;
+  --white: #FFFFFF;
+  --coral: #FF6F61;
+  --coral-dark: #E65A50;
+  --gray-light: #F5F5F5;
+  --font-sans: 'Montserrat', sans-serif;
+  --font-serif: 'Lora', serif;
+  --transition: 0.3s ease;
+}
+
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
 }
 
 body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  background: var(--white);
+  color: var(--black);
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
-header {
-  background: #111;
-  color: #fff;
-  padding: 15px 20px;
+h1, h2, h3, h4 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--black);
 }
 
-nav {
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--coral);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+a:hover {
+  color: var(--coral-dark);
+}
+
+/* NAVIGATION */
+.navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background: var(--white);
+  transition: padding var(--transition), box-shadow var(--transition);
+  padding: 1rem 0;
+  z-index: 10;
+}
+.navbar--shrink {
+  padding: 0.5rem 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
-
-nav ul {
-  display: flex;
-  list-style: none;
-}
-
-nav ul li {
-  margin: 0 10px;
-}
-
-nav ul li a {
-  color: #fff;
-  text-decoration: none;
-}
-
-nav ul li a.active,
-nav ul li a:hover {
-  color: #f39c12;
-}
-
-.logo {
+.nav-logo {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 700;
+  color: var(--black);
+}
+.nav-menu {
+  display: flex;
+  gap: 2rem;
+}
+.nav-item {
+  font-size: 0.9rem;
+  transition: color var(--transition);
+}
+.nav-item:hover {
+  color: var(--coral);
+}
+.nav-cart a {
+  position: relative;
+  font-size: 1rem;
 }
 
+/* HERO SECTION */
 .hero {
-  background: url('https://source.unsplash.com/1600x600/?fashion,clothes') center/cover no-repeat;
-  color: white;
+  position: relative;
+  height: 80vh;
+  background: url('/path/to/hero.jpg') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 100px 20px;
+  color: var(--white);
 }
-
-.btn {
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+}
+.hero-content {
+  position: relative;
+  max-width: 600px;
+  padding: 1rem;
+  animation: fadeInUp 0.6s ease both;
+}
+.hero-title {
+  font-size: 2.75rem;
+  margin-bottom: 0.5rem;
+}
+.hero-text {
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+}
+.btn-primary {
   display: inline-block;
-  margin-top: 15px;
-  padding: 10px 20px;
-  background: #f39c12;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
+  padding: 0.75rem 1.75rem;
+  background: var(--coral);
+  color: var(--white);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: background var(--transition), transform var(--transition);
+}
+.btn-primary:hover {
+  background: var(--coral-dark);
+  transform: scale(1.03);
 }
 
-.highlights {
-  display: flex;
-  justify-content: space-around;
-  padding: 40px 20px;
-  background: #f4f4f4;
-}
-
-.highlights div {
-  width: 30%;
-  text-align: center;
-}
-
-.content {
-  padding: 40px 20px;
-  max-width: 800px;
-  margin: auto;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-form input, form textarea, form button {
-  margin: 10px 0;
-  padding: 10px;
-}
-
-.product-grid {
+/* GRID LAYOUT EXAMPLE */
+.categories {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 4rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.category-card {
+  background: var(--gray-light);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform var(--transition);
+}
+.category-card img {
+  width: 100%;
+  display: block;
+}
+.category-card:hover {
+  transform: scale(1.03);
 }
 
+/* PRODUCT CARD (Carousel Slide) */
 .product-card {
-  background: #eee;
-  padding: 30px;
+  background: var(--gray-light);
+  border: 1px solid var(--black);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 1rem;
   text-align: center;
-  border-radius: 5px;
+  position: relative;
+}
+.product-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.product-card .add-to-cart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--coral);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+  cursor: pointer;
+}
+.product-card:hover .add-to-cart {
+  opacity: 1;
 }
 
-footer {
-  text-align: center;
-  padding: 15px;
-  background: #111;
-  color: white;
-  margin-top: 20px;
+/* ABOUT SECTION */
+.about-section {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 4rem auto;
+  padding: 0 1rem;
+  gap: 2rem;
+}
+.about-image {
+  flex: 1 1 300px;
+  background: url('/path/to/about.jpg') center/cover no-repeat;
+  min-height: 300px;
+  border-radius: 8px;
+}
+.about-text {
+  flex: 1 1 300px;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+/* FOOTER */
+.footer {
+  background: var(--black);
+  color: var(--white);
+  padding: 2rem 1rem;
+}
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+.footer h4 {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+.footer a {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--white);
+  font-size: 0.9rem;
+}
+.footer a:hover {
+  color: var(--coral);
+}
+
+/* FADE-IN ANIMATION */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--black);
+  color: var(--white);
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
