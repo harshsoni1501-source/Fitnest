@@ -1,5 +1,25 @@
 // SPA navigation and animation logic will go here
 
+// Sample products data
+const sampleProducts = {
+    men: [
+        { id: 1, name: 'Classic White Shirt', description: 'Elegant cotton shirt for formal occasions.', price: 2500, img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop', sizes: ['S', 'M', 'L', 'XL'] },
+        { id: 2, name: 'Denim Jeans', description: 'Comfortable blue denim jeans.', price: 3500, img: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop', sizes: ['28', '30', '32', '34'] },
+        { id: 3, name: 'Leather Belt', description: 'Genuine leather belt with metal buckle.', price: 1200, img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop', sizes: ['M', 'L'] },
+        { id: 4, name: 'Casual Sneakers', description: 'Stylish sneakers for everyday wear.', price: 4000, img: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop', sizes: ['8', '9', '10', '11'] },
+        { id: 5, name: 'Wool Sweater', description: 'Warm wool sweater for winter.', price: 3200, img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=300&h=300&fit=crop', sizes: ['S', 'M', 'L', 'XL'] },
+        { id: 6, name: 'Leather Wallet', description: 'Premium leather wallet with multiple compartments.', price: 1800, img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop', sizes: ['One Size'] }
+    ],
+    women: [
+        { id: 7, name: 'Floral Dress', description: 'Beautiful floral print dress.', price: 2800, img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop', sizes: ['S', 'M', 'L'] },
+        { id: 8, name: 'Skinny Jeans', description: 'Slim fit jeans for women.', price: 3200, img: 'https://images.unsplash.com/photo-1582418702059-97ebafb35d09?w=300&h=300&fit=crop', sizes: ['26', '28', '30', '32'] },
+        { id: 9, name: 'Silk Scarf', description: 'Elegant silk scarf.', price: 1500, img: 'https://images.unsplash.com/photo-1601762603332-db5e4b90cca7?w=300&h=300&fit=crop', sizes: ['One Size'] },
+        { id: 10, name: 'High Heels', description: 'Classic black high heels.', price: 4500, img: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=300&h=300&fit=crop', sizes: ['6', '7', '8', '9'] },
+        { id: 11, name: 'Cardigan Sweater', description: 'Cozy cardigan for layering.', price: 2600, img: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=300&h=300&fit=crop', sizes: ['S', 'M', 'L', 'XL'] },
+        { id: 12, name: 'Leather Handbag', description: 'Stylish leather handbag.', price: 5500, img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop', sizes: ['One Size'] }
+    ]
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Profile dropdown logic
     function showProfileDropdown() {
@@ -29,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!div.contains(e.target)) menu.style.display = 'none';
         });
         document.getElementById('profile-view').onclick = function() {
-            alert('Mobile: ' + userMobile + '\nWelcome to your profile!');
+            alert('Email: ' + userEmail + '\nWelcome to your profile!');
         };
         document.getElementById('order-history').onclick = function() {
             loadOrderHistory();
@@ -37,7 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         document.getElementById('profile-logout').onclick = function() {
             isLoggedIn = false;
-            userMobile = null;
+            userEmail = null;
+            localStorage.removeItem('cart');
             div.remove();
             loadSection('home');
         };
@@ -45,27 +66,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadOrderHistory() {
         mainContent.innerHTML = '<h2>Your Order History</h2><div id="order-history-list">Loading...</div>';
-        fetch('http://localhost:4567/api/orders/history?mobile=' + userMobile)
-            .then(res => res.json())
-            .then(orders => {
-                const listDiv = document.getElementById('order-history-list');
-                if (!orders.length) {
-                    listDiv.innerHTML = '<p>No orders found.</p>';
-                    return;
-                }
-                let html = '';
-                orders.forEach(order => {
-                    html += `<div class='order-block'><div class='order-header'>Order #${order.orderId} <span class='order-date'>${new Date(order.createdAt).toLocaleString()}</span></div><ul class='order-items'>`;
-                    order.items.forEach(item => {
-                        html += `<li><img src='${item.img}' alt='' style='width:32px;height:32px;border-radius:4px;margin-right:8px;vertical-align:middle;'>${item.name} (${item.size}) x${item.quantity} - ₹${item.price * item.quantity}</li>`;
-                    });
-                    html += '</ul></div>';
-                });
-                listDiv.innerHTML = html;
+        // Simulate order history
+        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        const listDiv = document.getElementById('order-history-list');
+        if (!orders.length) {
+            listDiv.innerHTML = '<p>No orders found.</p>';
+            return;
+        }
+        let html = '';
+        orders.forEach((order, index) => {
+            html += `<div class='order-block'><div class='order-header'>Order #${index + 1} <span class='order-date'>${new Date(order.date).toLocaleString()}</span></div><ul class='order-items'>`;
+            order.items.forEach(item => {
+                html += `<li><img src='${item.img}' alt='' style='width:32px;height:32px;border-radius:4px;margin-right:8px;vertical-align:middle;'>${item.name} (${item.size}) x${item.quantity} - ₹${item.price * item.quantity}</li>`;
             });
+            html += '</ul></div>';
+        });
+        listDiv.innerHTML = html;
     }
     const mainContent = document.getElementById('main-content');
-    let cart = [];
+    let isLoggedIn = false;
+    let userEmail = null;
+    // Load cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
     document.getElementById('home-link').addEventListener('click', function(e) {
         e.preventDefault();
         loadSection('home');
@@ -87,15 +110,15 @@ document.addEventListener('DOMContentLoaded', function() {
         loadSection('login');
     });
     // Initial load
-        const navLinks = document.querySelectorAll('.nav-links a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                loadSection(link.id.replace('-link', ''));
-            });
+    const navLinks = document.querySelectorAll('.nav-links a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            loadSection(link.id.replace('-link', ''));
         });
+    });
     loadSection('home');
 
     function loadSection(section) {
@@ -113,32 +136,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     mainContent.innerHTML = `<h2>Women's Collection</h2><div class='product-list' id='women-products'></div>`;
                     fetchProducts('women');
                     break;
-    // Fetch products from backend
+    // Fetch products from sample data
     function fetchProducts(category) {
-        fetch('http://localhost:4567/api/products?category=' + category)
-            .then(res => res.json())
-            .then(products => {
-                let html = '';
-                products.forEach(p => {
-                    html += `<div class='product-card' data-id='${p.id}' data-name='${p.name}' data-price='${p.price}' data-img='${p.img}'>
-                        <img src='${p.img}' alt='${p.name}' class='product-img'/>
-                        <div class='product-info'>
-                            <h3>${p.name}</h3>
-                            <p>${p.description || ''}</p>
-                            <div class='product-sizes'>
-                                <label>Size:</label>
-                                <select class='size-select'>
-                                    ${p.sizes.map(s => `<option>${s}</option>`).join('')}
-                                </select>
-                            </div>
-                            <button class='add-cart-btn'>Add to Cart</button>
-                            <div class='product-price'>₹${p.price}</div>
-                        </div>
-                    </div>`;
-                });
-                document.getElementById(category + '-products').innerHTML = html;
-                setTimeout(setupAddToCart, 10);
-            });
+        const products = sampleProducts[category] || [];
+        let html = '';
+        products.forEach(p => {
+            html += `<div class='product-card' data-id='${p.id}' data-name='${p.name}' data-price='${p.price}' data-img='${p.img}'>
+                <img src='${p.img}' alt='${p.name}' class='product-img'/>
+                <div class='product-info'>
+                    <h3>${p.name}</h3>
+                    <p>${p.description}</p>
+                    <div class='product-sizes'>
+                        <label>Size:</label>
+                        <select class='size-select'>
+                            ${p.sizes.map(s => `<option>${s}</option>`).join('')}
+                        </select>
+                    </div>
+                    <button class='add-cart-btn'>Add to Cart</button>
+                    <div class='product-price'>₹${p.price}</div>
+                </div>
+            </div>`;
+        });
+        document.getElementById(category + '-products').innerHTML = html;
+        setTimeout(setupAddToCart, 10);
     }
                 case 'cart':
                     mainContent.innerHTML = `<h2>Your Cart</h2><div id='cart-items'></div>`;
@@ -147,74 +167,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'login':
                     mainContent.innerHTML = `<h2>Login / Signup</h2>
                         <form id='login-form' class='login-form'>
-                            <label for='mobile'>Mobile Number:</label><br>
-                            <input type='tel' id='mobile' name='mobile' pattern='[0-9]{10}' maxlength='10' required placeholder='Enter 10-digit mobile'><br><br>
-                            <button type='button' id='send-otp-btn'>Send OTP</button><br><br>
-                            <div id='otp-section' style='display:none;'>
-                                <label for='otp'>Enter OTP:</label><br>
-                                <input type='text' id='otp' name='otp' maxlength='6' required placeholder='Enter OTP'><br><br>
-                                <button type='submit' id='verify-otp-btn'>Verify OTP</button>
-                            </div>
+                            <label for='email'>Email:</label><br>
+                            <input type='email' id='email' name='email' required placeholder='Enter your email'><br><br>
+                            <label for='password'>Password:</label><br>
+                            <input type='password' id='password' name='password' required placeholder='Enter your password'><br><br>
+                            <button type='submit'>Login</button>
                         </form>
                         <div id='login-message'></div>`;
                     setupLoginForm();
                     break;
     function setupLoginForm() {
-        const sendOtpBtn = document.getElementById('send-otp-btn');
-        const otpSection = document.getElementById('otp-section');
         const loginForm = document.getElementById('login-form');
         const loginMsg = document.getElementById('login-message');
-        sendOtpBtn.addEventListener('click', function() {
-            const mobile = document.getElementById('mobile').value;
-            if (!/^\d{10}$/.test(mobile)) {
-                loginMsg.textContent = 'Please enter a valid 10-digit mobile number.';
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            if (!email || !password) {
+                loginMsg.textContent = 'Please fill in all fields.';
                 loginMsg.style.color = 'red';
                 return;
             }
-            fetch('http://localhost:4567/api/send-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mobile })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    otpSection.style.display = 'block';
-                    loginMsg.textContent = 'OTP sent to ' + mobile + ' (simulated)';
-                    loginMsg.style.color = 'green';
-                } else {
-                    loginMsg.textContent = 'Failed to send OTP.';
-                    loginMsg.style.color = 'red';
-                }
-            });
-        });
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const mobile = document.getElementById('mobile').value;
-            const otp = document.getElementById('otp').value;
-            fetch('http://localhost:4567/api/verify-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mobile, otp })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    loginMsg.textContent = 'Login successful!';
-                    loginMsg.style.color = 'green';
-                    isLoggedIn = true;
-                    userMobile = mobile;
-                    setTimeout(() => {
-                        showProfileDropdown();
-                        navLinks.forEach(l => l.classList.remove('active'));
-                        document.getElementById('home-link').classList.add('active');
-                        loadSection('home');
-                    }, 1000);
-                } else {
-                    loginMsg.textContent = 'Invalid OTP.';
-                    loginMsg.style.color = 'red';
-                }
-            });
+            // Simulate login success
+            loginMsg.textContent = 'Login successful!';
+            loginMsg.style.color = 'green';
+            isLoggedIn = true;
+            userEmail = email;
+            setTimeout(() => {
+                showProfileDropdown();
+                navLinks.forEach(l => l.classList.remove('active'));
+                document.getElementById('home-link').classList.add('active');
+                loadSection('home');
+            }, 1000);
         });
     }
             }
@@ -239,90 +223,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function addToCart(product) {
-        if (!isLoggedIn || !userMobile) {
+        if (!isLoggedIn || !userEmail) {
             alert('Please login to add items to cart.');
             return;
         }
-        fetch('http://localhost:4567/api/cart/add', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                mobile: userMobile,
-                productId: product.id,
-                size: product.size,
-                quantity: 1
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert('Added to cart!');
-            } else {
-                alert('Failed to add to cart.');
-            }
-        });
+        cart.push(product);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert('Added to cart!');
     }
 
     function renderCart() {
         const cartDiv = document.getElementById('cart-items');
-        if (!isLoggedIn || !userMobile) {
+        if (!isLoggedIn || !userEmail) {
             cartDiv.innerHTML = '<p>Please login to view your cart.</p>';
             return;
         }
-        fetch('http://localhost:4567/api/cart?mobile=' + userMobile)
-            .then(res => res.json())
-            .then(items => {
-                if (!items.length) {
-                    cartDiv.innerHTML = '<p>Your cart is empty.</p>';
-                    return;
-                }
-                let total = 0;
-                let html = '<table class="cart-table"><tr><th>Product</th><th>Size</th><th>Qty</th><th>Price</th><th>Remove</th></tr>';
-                items.forEach((item, i) => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
-                    html += `<tr>
-                        <td><img src='${item.img}' alt='' style='width:40px;height:40px;border-radius:4px;margin-right:8px;vertical-align:middle;'>${item.name}</td>
-                        <td>${item.size}</td>
-                        <td>${item.quantity}</td>
-                        <td>₹${itemTotal}</td>
-                        <td><button class='remove-cart-btn' data-id='${item.id}'>Remove</button></td>
-                    </tr>`;
-                });
-                html += `<tr><td colspan='3' style='text-align:right;font-weight:bold;'>Total:</td><td colspan='2' style='font-weight:bold;'>₹${total}</td></tr>`;
-                html += '</table>';
-                html += '<button class="checkout-btn">Proceed to Checkout</button>';
-                cartDiv.innerHTML = html;
-                document.querySelectorAll('.remove-cart-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const cartId = btn.getAttribute('data-id');
-                        fetch('http://localhost:4567/api/cart/remove', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ cartId })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) renderCart();
-                            else alert('Failed to remove item.');
-                        });
-                    });
-                });
-                document.querySelector('.checkout-btn').addEventListener('click', function() {
-                    fetch('http://localhost:4567/api/order/checkout', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mobile: userMobile })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            cartDiv.innerHTML = `<div class='checkout-success'>Thank you for your purchase! Your order #${data.orderId} has been placed successfully.</div>`;
-                        } else {
-                            alert('Checkout failed: ' + (data.error || 'Unknown error'));
-                        }
-                    });
-                });
+        if (!cart.length) {
+            cartDiv.innerHTML = '<p>Your cart is empty.</p>';
+            return;
+        }
+        let total = 0;
+        let html = '<table class="cart-table"><tr><th>Product</th><th>Size</th><th>Qty</th><th>Price</th><th>Remove</th></tr>';
+        cart.forEach((item, i) => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            html += `<tr>
+                <td><img src='${item.img}' alt='' style='width:40px;height:40px;border-radius:4px;margin-right:8px;vertical-align:middle;'>${item.name}</td>
+                <td>${item.size}</td>
+                <td>${item.quantity}</td>
+                <td>₹${itemTotal}</td>
+                <td><button class='remove-cart-btn' data-index='${i}'>Remove</button></td>
+            </tr>`;
+        });
+        html += `<tr><td colspan='3' style='text-align:right;font-weight:bold;'>Total:</td><td colspan='2' style='font-weight:bold;'>₹${total}</td></tr>`;
+        html += '</table>';
+        html += '<button class="checkout-btn">Proceed to Checkout</button>';
+        cartDiv.innerHTML = html;
+        document.querySelectorAll('.remove-cart-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const index = parseInt(btn.getAttribute('data-index'));
+                cart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCart();
             });
+        });
+        document.querySelector('.checkout-btn').addEventListener('click', function() {
+            // Simulate checkout
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push({ date: new Date().toISOString(), items: cart });
+            localStorage.setItem('orders', JSON.stringify(orders));
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            cartDiv.innerHTML = `<div class='checkout-success'>Thank you for your purchase! Your order has been placed successfully.</div>`;
+        });
     }
 });
