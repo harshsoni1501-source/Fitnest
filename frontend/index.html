@@ -4,50 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fitnest - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header>
-        <nav>
-            <div class="logo">Fitnest</div>
-            <ul class="nav-links">
-                <li><a href="#" id="home-link">Home</a></li>
-                <li><a href="#" id="men-link">Men</a></li>
-                <li><a href="#" id="women-link">Women</a></li>
-                <li><a href="#" id="cart-link">Cart</a></li>
-                <li><a href="#" id="login-link">Login/Signup</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main id="main-content">
-        <!-- Dynamic content will be loaded here -->
-    </main>
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Fitnest</h3>
-                <p>Discover elegant and classy apparel and accessories from home-grown sellers. Quality fashion for every occasion.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#" id="footer-home">Home</a></li>
-                    <li><a href="#" id="footer-men">Men</a></li>
-                    <li><a href="#" id="footer-women">Women</a></li>
-                    <li><a href="#" id="footer-cart">Cart</a></li>
+        <nav role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <div class="logo">Fitnest</div>
+                <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle navigation menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <ul id="nav-menu" class="nav-links">
+                    <li><a href="#" id="home-link">Home</a></li>
+                    <li><a href="#" id="men-link">Men</a></li>
+                    <li><a href="#" id="women-link">Women</a></li>
+                    <li><a href="#" id="cart-link">Cart</a></li>
+                    <li><a href="#" id="login-link">Login/Signup</a></li>
                 </ul>
             </div>
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p>Email: support@fitnest.com</p>
-                <p>Phone: +1 (123) 456-7890</p>
-                <div class="social-links">
-                    <a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a>
+        </nav>
+    </header>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>New arrivals — refined essentials</h1>
+                    <p>Discover elegant and classy apparel and accessories from home-grown sellers.</p>
+                    <button class="cta-button" aria-label="Shop new arrivals">Shop New Arrivals</button>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2023 Fitnest. All rights reserved.</p>
+        </section>
+        <section class="products">
+            <div class="container">
+                <h2>Featured Products</h2>
+                <div class="product-list" id="product-list">
+                    <!-- Product cards will be populated by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Fitnest</h3>
+                    <p>Discover elegant and classy apparel and accessories from home-grown sellers. Quality fashion for every occasion.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" id="footer-home">Home</a></li>
+                        <li><a href="#" id="footer-men">Men</a></li>
+                        <li><a href="#" id="footer-women">Women</a></li>
+                        <li><a href="#" id="footer-cart">Cart</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: support@fitnest.com</p>
+                    <p>Phone: +1 (123) 456-7890</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">Facebook</a> | <a href="#" aria-label="Instagram">Instagram</a> | <a href="#" aria-label="Twitter">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Fitnest. All rights reserved.</p>
+            </div>
         </div>
     </footer>
     <script src="js/app.js"></script>
