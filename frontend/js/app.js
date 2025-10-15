@@ -36,14 +36,27 @@ const sampleProducts = {
 window.API_BASE = window.API_BASE || '/api';
 
 // role is 'buyer' or 'seller'
+// Demo login — not for production. Use hashed passwords/JWT in production.
+// Simulates backend login for demo purposes
 async function loginWithRole(role, username, password) {
-    const res = await fetch(`${window.API_BASE}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, role })
-    });
-    return res.json();
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Demo users
+    const users = {
+        buyer: { 'buyer1': 'pass1', 'buyer2': 'pass2' },
+        seller: { 'seller1': 'pass1', 'seller2': 'pass2' }
+    };
+
+    if (users[role] && users[role][username] === password) {
+        return { success: true, username, role };
+    } else {
+        return { success: false, message: 'Invalid username or password' };
+    }
 }
+
+// Make function globally available
+window.loginWithRole = loginWithRole;
 
 document.addEventListener('DOMContentLoaded', function() {
     // Configurable API base URL (default to relative /api)
@@ -206,37 +219,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadProductsForCategory(category) {
-        fetch(`${API_BASE}/products`)
-        .then(response => response.json())
-        .then(products => {
-            const filteredProducts = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
-            const html = filteredProducts.map(p => `
-                <div class='product-card' data-id='${p.id}' data-name='${p.name}' data-price='${p.price}' data-img='${p.imageUrl}'>
-                    <img src='${p.imageUrl || 'https://via.placeholder.com/300x300?text=No+Image'}' alt='${p.name}' class='product-img'/>
-                    <div class='product-info'>
-                        <h3>${p.name}</h3>
-                        <p>${p.description}</p>
-                        <div class='product-sizes'>
-                            <label>Size:</label>
-                            <select class='size-select'>
-                                <option>S</option>
-                                <option>M</option>
-                                <option>L</option>
-                                <option>XL</option>
-                            </select>
-                        </div>
-                        <button class='add-cart-btn'>Add to Cart</button>
-                        <div class='product-price'>₹${p.price}</div>
+        // Use sample products for demo since backend is not running
+        const products = sampleProducts[category] || [];
+        const html = products.map(p => `
+            <div class='product-card' data-id='${p.id}' data-name='${p.name}' data-price='${p.price}' data-img='${p.img}'>
+                <img src='${p.img}' alt='${p.name}' class='product-img'/>
+                <div class='product-info'>
+                    <h3>${p.name}</h3>
+                    <p>${p.description}</p>
+                    <div class='product-sizes'>
+                        <label>Size:</label>
+                        <select class='size-select'>
+                            ${p.sizes.map(s => `<option>${s}</option>`).join('')}
+                        </select>
                     </div>
+                    <button class='add-cart-btn'>Add to Cart</button>
+                    <div class='product-price'>₹${p.price}</div>
                 </div>
-            `).join('');
-            document.getElementById('product-list').innerHTML = html || '<p>No products available in this category.</p>';
-            setupAddToCart();
-        })
-        .catch(error => {
-            console.error('Error loading products:', error);
-            document.getElementById('product-list').innerHTML = '<p>Error loading products. Please try again later.</p>';
-        });
+            </div>
+        `).join('');
+        document.getElementById('product-list').innerHTML = html || '<p>No products available in this category.</p>';
+        setupAddToCart();
     }
 
     function renderCart() {
@@ -348,9 +351,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const role = window.location.pathname.includes('buyer') ? 'buyer' : 'seller';
+            const role = document.querySelector('input[name="role"]:checked')?.value || 'buyer'; // Default to buyer if not specified
 
             if (!username || !password) {
                 loginMsg.textContent = 'Please fill in all fields.';
@@ -364,11 +367,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     loginMsg.textContent = 'Login successful!';
                     loginMsg.style.color = 'green';
                     isLoggedIn = true;
-                    userEmail = username; // or result.username
+                    userEmail = username;
 
                     setTimeout(() => {
                         showProfileDropdown();
-                        window.location.href = 'index.html'; // redirect to home
+                        loadSection('home'); // Use SPA navigation instead of redirect
                     }, 1000);
                 } else {
                     loginMsg.textContent = result.message || 'Login failed.';
