@@ -1,11 +1,18 @@
-# Fitnest Frontend Enhancement TODO
+# TODO: Add Sellers Page to Fitnest Frontend with Backend Support
 
-## Tasks
-- [ ] Update index.html: Add footer with About, Contact, etc.
-- [ ] Update style.css: Add footer styles (positioned at bottom, links, etc.).
-- [ ] Update app.js: Hardcode sample products for men/women (e.g., 5-6 items each with images from Unsplash, descriptions, sizes like S/M/L/XL).
-- [ ] Update app.js: Replace fetchProducts with function using hardcoded data.
-- [ ] Update app.js: Change login form to email/password, validate email, simulate login.
-- [ ] Update app.js: Update cart to use localStorage for add/remove/render, no API calls.
-- [ ] Test: Run locally to verify product listing, add to cart, login work.
-- [ ] Finalize: Add more sample data if needed for realism.
+## Backend Changes
+- [x] Check backend/db/schema.sql for existing products table
+- [x] Add products table to schema.sql if missing (columns: id, name, description, price, category, image_url)
+- [x] Create backend/src/ProductController.java with POST /api/products endpoint to save product data
+
+## Frontend Changes
+- [x] Update frontend/index.html: Add "Sellers" link to navigation
+- [x] Update frontend/index.html: Add hidden sellers section with product form (name, description, price, category select, image file input)
+- [x] Update frontend/css/style.css: Add minimal styles for sellers form
+- [x] Update frontend/js/app.js: Add event listeners for nav links to show/hide sections
+- [x] Update frontend/js/app.js: Add form submission handler with validation and fetch to backend
+
+## Testing
+- [x] Run backend server
+- [x] Open frontend in browser, test sellers page navigation and form submission
+- [x] Verify product data is saved in database

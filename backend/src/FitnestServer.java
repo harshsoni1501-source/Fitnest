@@ -50,24 +50,11 @@ public class FitnestServer {
         get("/api/cart", CartController::getCart);
         post("/api/cart/remove", CartController::removeFromCart);
 
-        // Product listing (static for now)
-        get("/api/products", (req, res) -> {
-            String category = req.queryParams("category");
-            List<Map<String, Object>> products = new ArrayList<>();
-            if ("men".equals(category)) {
-                products.add(Map.of("id", 1, "name", "Classic White Shirt", "price", 999, "img", "assets/men1.jpg", "sizes", List.of("S","M","L","XL")));
-                products.add(Map.of("id", 2, "name", "Sporty T-shirt", "price", 699, "img", "assets/men2.jpg", "sizes", List.of("S","M","L","XL")));
-                products.add(Map.of("id", 5, "name", "Denim Jeans", "price", 1199, "img", "assets/men3.jpg", "sizes", List.of("S","M","L","XL")));
-                products.add(Map.of("id", 6, "name", "Leather Belt", "price", 499, "img", "assets/men4.jpg", "sizes", List.of("S","M","L","XL")));
-            } else if ("women".equals(category)) {
-                products.add(Map.of("id", 3, "name", "Elegant Summer Dress", "price", 1299, "img", "assets/women1.jpg", "sizes", List.of("S","M","L","XL")));
-                products.add(Map.of("id", 4, "name", "Chic Top", "price", 799, "img", "assets/women2.jpg", "sizes", List.of("S","M","L","XL")));
-                products.add(Map.of("id", 7, "name", "Designer Handbag", "price", 1599, "img", "assets/women3.jpg", "sizes", List.of("One Size")));
-                products.add(Map.of("id", 8, "name", "Pearl Earrings", "price", 599, "img", "assets/women4.jpg", "sizes", List.of("One Size")));
-            }
-            res.type("application/json");
-            return gson.toJson(products);
-        });
+        // Product listing (from DB)
+        get("/api/products", ProductController::getProducts);
+
+        // Add new product (for sellers)
+        post("/api/products", ProductController::addProduct);
 
         // Cart endpoints would go here (future)
     }

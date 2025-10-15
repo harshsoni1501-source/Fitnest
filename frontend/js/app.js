@@ -75,6 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Sellers form submission
+    document.addEventListener('submit', function(e) {
+        if (e.target.id === 'sell-form') {
+            e.preventDefault();
+            handleSellFormSubmit();
+        }
+    });
+
     // CTA button on hero
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('cta-button')) {
@@ -101,6 +109,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                 case 'women':
                     renderProducts('women');
+                    break;
+                case 'sellers':
+                    renderSellers();
                     break;
                 case 'cart':
                     renderCart();
@@ -165,33 +176,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="container">
                     <h2>${category.charAt(0).toUpperCase() + category.slice(1)}'s Collection</h2>
                     <div class="product-list" id="product-list">
-                        ${renderProductList(category)}
+                        Loading products...
                     </div>
                 </div>
             </section>
         `;
-        setupAddToCart();
+        loadProductsForCategory(category);
     }
 
-    function renderProductList(category) {
-        const products = sampleProducts[category] || [];
-        return products.map(p => `
-            <div class='product-card' data-id='${p.id}' data-name='${p.name}' data-price='${p.price}' data-img='${p.img}'>
-                <img src='${p.img}' alt='${p.name}' class='product-img'/>
-                <div class='product-info'>
-                    <h3>${p.name}</h3>
-                    <p>${p.description}</p>
-                    <div class='product-sizes'>
-                        <label>Size:</label>
-                        <select class='size-select'>
-                            ${p.sizes.map(s => `<option>${s}</option>`).join('')}
-                        </select>
+    function loadProductsForCategory(category) {
+        fetch('http://localhost:4567/api/products')
+        .then(response => response.json())
+        .then(products => {
+            const filteredProducts = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
+            const html = filteredProducts.map(p => `
+                <div class='product-card' data-id='${p.id}' data-name='${p.name}' data-price='${p.price}' data-img='${p.imageUrl}'>
+                    <img src='${p.imageUrl || 'https://via.placeholder.com/300x300?text=No+Image'}' alt='${p.name}' class='product-img'/>
+                    <div class='product-info'>
+                        <h3>${p.name}</h3>
+                        <p>${p.description}</p>
+                        <div class='product-sizes'>
+                            <label>Size:</label>
+                            <select class='size-select'>
+                                <option>S</option>
+                                <option>M</option>
+                                <option>L</option>
+                                <option>XL</option>
+                            </select>
+                        </div>
+                        <button class='add-cart-btn'>Add to Cart</button>
+                        <div class='product-price'>₹${p.price}</div>
                     </div>
-                    <button class='add-cart-btn'>Add to Cart</button>
-                    <div class='product-price'>₹${p.price}</div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+            document.getElementById('product-list').innerHTML = html || '<p>No products available in this category.</p>';
+            setupAddToCart();
+        })
+        .catch(error => {
+            console.error('Error loading products:', error);
+            document.getElementById('product-list').innerHTML = '<p>Error loading products. Please try again later.</p>';
+        });
     }
 
     function renderCart() {
@@ -427,5 +451,121 @@ document.addEventListener('DOMContentLoaded', function() {
             html += '</ul></div>';
         });
         listDiv.innerHTML = html;
+    }
+
+    function renderSellers() {
+        const main = document.querySelector('main');
+        main.innerHTML = `
+            <section class="sellers" id="sellers-section">
+                <div class="container">
+                    <h2>Sell Your Products</h2>
+                    <form id="sell-form" class="sell-form">
+                        <div class="form-group">
+                            <label for="product-name">Product Name</label>
+                            <input type="text" id="product-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-description">Description</label>
+                            <textarea id="product-description" name="description" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-price">Price (INR)</label>
+                            <input type="number" id="product-price" name="price" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-category">Category</label>
+                            <select id="product-category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="men">Men</option>
+                                <option value="women">Women</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-image">Image URL</label>
+                            <input type="url" id="product-image" name="imageUrl" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label for="seller-mobile">Your Mobile (for tracking)</label>
+                            <input type="text" id="seller-mobile" name="seller" placeholder="e.g., +91 9876543210">
+                        </div>
+                        <button type="submit" class="btn">Submit Product</button>
+                    </form>
+                    <div class="listed-products">
+                        <h3>Your Listed Products</h3>
+                        <div id="products-list" class="product-list">
+                            <!-- Products will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        `;
+        loadListedProducts();
+    }
+
+    function handleSellFormSubmit() {
+        const form = document.getElementById('sell-form');
+        const formData = new FormData(form);
+        const productData = Object.fromEntries(formData.entries());
+
+        // Basic validation
+        if (!productData.name || !productData.description || !productData.price || !productData.category) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        // Send data to backend
+        fetch('http://localhost:4567/api/products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(productData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Product submitted successfully! It will be listed soon.');
+                form.reset();
+                loadListedProducts(); // Refresh the list
+            } else {
+                alert('Error submitting product: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error submitting product. Please try again.');
+        });
+    }
+
+    function loadListedProducts() {
+        const listDiv = document.getElementById('products-list');
+        listDiv.innerHTML = 'Loading products...';
+
+        fetch('http://localhost:4567/api/products')
+        .then(response => response.json())
+        .then(products => {
+            if (products.length === 0) {
+                listDiv.innerHTML = '<p>No products listed yet.</p>';
+                return;
+            }
+
+            const html = products.map(p => `
+                <div class='product-card' data-id='${p.id}'>
+                    <img src='${p.imageUrl || 'https://via.placeholder.com/300x300?text=No+Image'}' alt='${p.name}' class='product-img'/>
+                    <div class='product-info'>
+                        <h3>${p.name}</h3>
+                        <p>${p.description}</p>
+                        <div class='product-price'>₹${p.price}</div>
+                        <div class='product-category'>Category: ${p.category}</div>
+                        <div class='seller-info'>Seller: ${p.seller || 'N/A'}</div>
+                    </div>
+                </div>
+            `).join('');
+            listDiv.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading products:', error);
+            listDiv.innerHTML = '<p>Error loading products. Please try again later.</p>';
+        });
     }
 });
