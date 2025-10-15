@@ -92,11 +92,20 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const section = this.id.replace('-link', '');
-            loadSection(section);
-
-            // Update active link
-            document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
+            if (section === 'login') {
+                // Show login section in index.html
+                document.getElementById('login-section').style.display = 'block';
+                document.querySelector('.hero').style.display = 'none';
+                document.querySelector('.products').style.display = 'none';
+                // Update active link
+                document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            } else {
+                loadSection(section);
+                // Update active link
+                document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            }
 
             // Close mobile menu
             navLinks.classList.remove('open');
@@ -351,9 +360,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const username = document.getElementById('email').value;
+            const username = document.getElementById('email')?.value || document.getElementById('username')?.value;
             const password = document.getElementById('password').value;
-            const role = document.querySelector('input[name="role"]:checked')?.value || 'buyer'; // Default to buyer if not specified
+            const role = document.querySelector('input[name="role"]:checked')?.value || window.location.pathname.includes('buyer') ? 'buyer' : window.location.pathname.includes('seller') ? 'seller' : 'buyer';
 
             if (!username || !password) {
                 loginMsg.textContent = 'Please fill in all fields.';
@@ -371,7 +380,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     setTimeout(() => {
                         showProfileDropdown();
-                        loadSection('home'); // Use SPA navigation instead of redirect
+                        if (window.location.pathname.includes('login.html')) {
+                            window.location.href = 'index.html'; // Redirect for standalone login page
+                        } else {
+                            loadSection('home'); // Use SPA navigation for index.html
+                        }
                     }, 1000);
                 } else {
                     loginMsg.textContent = result.message || 'Login failed.';
