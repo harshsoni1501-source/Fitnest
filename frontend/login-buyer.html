@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitnest - Home</title>
+    <title>Fitnest - Buyer Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
                     </svg>
                 </button>
                 <ul id="nav-menu" class="nav-links">
-                    <li><a href="#" id="home-link">Home</a></li>
+                    <li><a href="index.html">Home</a></li>
                     <li><a href="#" id="men-link">Men</a></li>
                     <li><a href="#" id="women-link">Women</a></li>
                     <li><a href="#" id="sellers-link">Sellers</a></li>
@@ -34,24 +34,23 @@
         </nav>
     </header>
     <main>
-        <section class="hero">
+        <section class="login-section">
             <div class="container">
-                <div class="hero-content">
-                    <h1>New arrivals — refined essentials</h1>
-                    <p>Discover elegant and classy apparel and accessories from home-grown sellers.</p>
-                    <button class="cta-button" aria-label="Shop new arrivals">Shop New Arrivals</button>
-                </div>
+                <h2>Buyer Login</h2>
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter password">
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+                <div id="login-message"></div>
             </div>
         </section>
-        <section class="products">
-            <div class="container">
-                <h2>Featured Products</h2>
-                <div class="product-list" id="product-list">
-                    <!-- Product cards will be populated by JS -->
-                </div>
-            </div>
-        </section>
-
     </main>
     <footer role="contentinfo">
         <div class="container">
@@ -63,7 +62,7 @@
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#" id="footer-home">Home</a></li>
+                        <li><a href="index.html">Home</a></li>
                         <li><a href="#" id="footer-men">Men</a></li>
                         <li><a href="#" id="footer-women">Women</a></li>
                         <li><a href="#" id="footer-cart">Cart</a></li>

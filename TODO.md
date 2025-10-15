@@ -1,18 +1,17 @@
-# TODO: Add Sellers Page to Fitnest Frontend with Backend Support
+# TODO: Add Buyer/Seller Login Pages and Backend Auth
 
-## Backend Changes
-- [x] Check backend/db/schema.sql for existing products table
-- [x] Add products table to schema.sql if missing (columns: id, name, description, price, category, image_url)
-- [x] Create backend/src/ProductController.java with POST /api/products endpoint to save product data
+## Frontend Tasks
+- [x] Create `frontend/login-buyer.html` with form for buyer login
+- [x] Create `frontend/login-seller.html` with form for seller login
+- [x] Update `frontend/js/app.js` to add `API_BASE`, `loginWithRole` function, and form wiring
+- [x] Update `frontend/index.html` to add links to login pages in nav
 
-## Frontend Changes
-- [x] Update frontend/index.html: Add "Sellers" link to navigation
-- [x] Update frontend/index.html: Add hidden sellers section with product form (name, description, price, category select, image file input)
-- [x] Update frontend/css/style.css: Add minimal styles for sellers form
-- [x] Update frontend/js/app.js: Add event listeners for nav links to show/hide sections
-- [x] Update frontend/js/app.js: Add form submission handler with validation and fetch to backend
+## Backend Tasks
+- [x] Create `backend/src/AuthController.java` with POST /api/auth/login endpoint
+- [x] Update `backend/src/FitnestServer.java` to register the auth endpoint
 
-## Testing
-- [x] Run backend server
-- [x] Open frontend in browser, test sellers page navigation and form submission
-- [x] Verify product data is saved in database
+## Testing & Verification
+- [ ] Build backend with `mvn clean package`
+- [ ] Run server and test login endpoints
+- [ ] Verify frontend pages load and forms work
+- [ ] Update README with verification steps

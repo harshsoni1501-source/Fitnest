@@ -32,7 +32,23 @@ const sampleProducts = {
     ]
 };
 
+// Allow backend or environment to override; default to relative
+window.API_BASE = window.API_BASE || '/api';
+
+// role is 'buyer' or 'seller'
+async function loginWithRole(role, username, password) {
+    const res = await fetch(`${window.API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, role })
+    });
+    return res.json();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Configurable API base URL (default to relative /api)
+    const API_BASE = window.location.origin + '/api';
+
     // State management
     let isLoggedIn = false;
     let userEmail = null;
@@ -91,6 +107,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('men-link').classList.add('active');
         }
     });
+
+    // Login form wiring for buyer/seller pages
+    if (document.getElementById('login-form')) {
+        setupLoginForm();
+    }
 
     // Initial load
     loadSection('home');
@@ -185,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadProductsForCategory(category) {
-        fetch('http://localhost:4567/api/products')
+        fetch(`${API_BASE}/products`)
         .then(response => response.json())
         .then(products => {
             const filteredProducts = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
@@ -325,29 +346,39 @@ document.addEventListener('DOMContentLoaded', function() {
         const loginForm = document.getElementById('login-form');
         const loginMsg = document.getElementById('login-message');
 
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const role = window.location.pathname.includes('buyer') ? 'buyer' : 'seller';
 
-            if (!email || !password) {
+            if (!username || !password) {
                 loginMsg.textContent = 'Please fill in all fields.';
                 loginMsg.style.color = 'red';
                 return;
             }
 
-            // Simulate login success
-            loginMsg.textContent = 'Login successful!';
-            loginMsg.style.color = 'green';
-            isLoggedIn = true;
-            userEmail = email;
+            try {
+                const result = await loginWithRole(role, username, password);
+                if (result.success) {
+                    loginMsg.textContent = 'Login successful!';
+                    loginMsg.style.color = 'green';
+                    isLoggedIn = true;
+                    userEmail = username; // or result.username
 
-            setTimeout(() => {
-                showProfileDropdown();
-                loadSection('home');
-                document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
-                document.getElementById('home-link').classList.add('active');
-            }, 1000);
+                    setTimeout(() => {
+                        showProfileDropdown();
+                        window.location.href = 'index.html'; // redirect to home
+                    }, 1000);
+                } else {
+                    loginMsg.textContent = result.message || 'Login failed.';
+                    loginMsg.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                loginMsg.textContent = 'Login failed. Please try again.';
+                loginMsg.style.color = 'red';
+            }
         });
     }
 
@@ -514,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Send data to backend
-        fetch('http://localhost:4567/api/products', {
+        fetch(`${API_BASE}/products`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -541,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const listDiv = document.getElementById('products-list');
         listDiv.innerHTML = 'Loading products...';
 
-        fetch('http://localhost:4567/api/products')
+        fetch(`${API_BASE}/products`)
         .then(response => response.json())
         .then(products => {
             if (products.length === 0) {

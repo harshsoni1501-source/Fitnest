@@ -4,6 +4,7 @@ import static spark.Spark.*;
 import com.google.gson.Gson;
 import java.sql.*;
 import java.util.*;
+import java.nio.file.Paths;
 
 public class FitnestServer {
     // Order history for user
@@ -13,6 +14,9 @@ public class FitnestServer {
     public static void main(String[] args) {
         port(4567);
         Gson gson = new Gson();
+
+        // Serve static files from frontend directory
+        staticFiles.externalLocation(Paths.get(System.getProperty("user.dir"), "..", "frontend").toAbsolutePath().toString());
 
         // Enable CORS for frontend
         before((req, res) -> {
@@ -55,6 +59,9 @@ public class FitnestServer {
 
         // Add new product (for sellers)
         post("/api/products", ProductController::addProduct);
+
+        // Authentication endpoint
+        post("/api/auth/login", AuthController::login);
 
         // Cart endpoints would go here (future)
     }
