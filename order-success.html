@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order Confirmation | Fitnest</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <a href="index.html" class="logo">Fitnest</a>
+      <div class="header-actions">
+        <form id="siteSearchForm" class="site-search">
+          <input id="siteSearchInput" type="search" placeholder="Search products…" aria-label="Search">
+        </form>
+        <a href="cart.html" class="cart-link">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <a href="login.html" class="login-link">Login</a>
+        <div class="profile-menu" style="display: none;">
+          <button id="profileButton" class="profile-button">
+            <img src="public/profile-avatar.svg" alt="" class="profile-avatar" id="profileAvatar">
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <a href="profile.html">My Profile</a>
+            <a href="orders.html">My Orders</a>
+            <button id="logoutButton">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="confirmation-page">
+    <section class="confirmation">
+      <h1 style="display:flex;align-items:center;gap:0.6rem;font-weight:600">✅ Thank you — your order has been placed!</h1>
+      <p id="orderMessage" class="confirmation-subtitle" style="color:var(--color-text-secondary); margin-bottom:var(--spacing-md);">We have received your order and will process it shortly. You'll receive a confirmation email with tracking details.</p>
+      <div style="margin-bottom:var(--spacing-md)"><strong>Order ID:</strong> <span id="orderId" class="order-number">—</span></div>
+
+      <div class="confirmation-details">
+        <h2>Shipping To</h2>
+        <div id="shippingDetails">Loading shipping details...</div>
+
+        <h2>Order Summary</h2>
+        <div id="orderItems">Loading order items...</div>
+        <div class="summary-row"><span>Subtotal</span><span id="finalSubtotal">₹0.00</span></div>
+        <div class="summary-row"><span>Shipping</span><span id="finalShipping">₹10.00</span></div>
+        <div class="summary-row total"><span>Total</span><span id="finalTotal">₹0.00</span></div>
+      </div>
+
+  <p><a href="index.html">Continue shopping</a></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Fitnest. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const shipping = JSON.parse(localStorage.getItem('fitnestShipping')) || null
+      const cart = JSON.parse(localStorage.getItem('fitnestCart')) || []
+      const orderId = localStorage.getItem('fitnestOrderId') || ('ORD' + Date.now().toString().slice(-8))
+
+      const orderIdEl = document.getElementById('orderId')
+      if (orderIdEl) orderIdEl.textContent = orderId
+
+      // Decrement stocks for this order (runs only once per orderId)
+      try { window.processOrder && window.processOrder(cart, orderId) } catch(e) { console.warn('processOrder call failed', e) }
+      try { sendEvent && sendEvent('order_placed', orderId, { orderId, cart, shipping }) } catch (e) {}
+      // Persist order locally for Order History page
+      try {
+        const user = (function(){ try { return JSON.parse(localStorage.getItem('fitnestUser')) } catch(e) { return null } })()
+        const subtotal = cart.reduce((s, it) => s + it.price * it.quantity, 0)
+        const shippingFee = 10
+        const total = subtotal + shippingFee
+        const order = { orderId, cart, shipping, userId: user ? user.id : null, subtotal, shippingFee, total, placedAt: Date.now() }
+        if (window.addOrder) window.addOrder(order)
+      } catch (e) { /* ignore */ }
+
+      const format = (v) => {
+        try { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(v) } catch(e) { return '₹'+v.toFixed(2) }
+      }
+
+      const shippingDetails = document.getElementById('shippingDetails')
+      if (shipping) {
+        shippingDetails.innerHTML = `
+          <div>${shipping.fullName}</div>
+          <div>${shipping.address1}${shipping.address2 ? ', ' + shipping.address2 : ''}</div>
+          <div>${shipping.city} — ${shipping.pincode}</div>
+          <div>${shipping.state}, ${shipping.country}</div>
+          <div>Phone: ${shipping.phone}</div>
+          <div>Email: ${shipping.email}</div>
+        `
+      } else {
+        shippingDetails.textContent = 'No shipping details found.'
+      }
+
+      const orderItems = document.getElementById('orderItems')
+      if (!cart.length) {
+        orderItems.innerHTML = '<p>No items in the order.</p>'
+      } else {
+        orderItems.innerHTML = cart.map(i => `<div class="summary-item">${i.name} × ${i.quantity} — ${format(i.price * i.quantity)}</div>`).join('')
+      }
+
+      const subtotal = cart.reduce((s, it) => s + it.price * it.quantity, 0)
+      const shippingFee = 10
+      const total = subtotal + shippingFee
+      document.getElementById('finalSubtotal').textContent = format(subtotal)
+      document.getElementById('finalShipping').textContent = format(shippingFee)
+      document.getElementById('finalTotal').textContent = format(total)
+
+      // clear cart after order placed (optional)
+      localStorage.removeItem('fitnestCart')
+    })
+  </script>
+</body>
+</html>

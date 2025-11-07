@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout — Shipping Address | Fitnest</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <a href="index.html" class="logo">Fitnest</a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="products.html?category=men">Men</a>
+        <a href="products.html?category=women">Women</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <form id="siteSearchForm" class="site-search">
+          <input id="siteSearchInput" type="search" placeholder="Search products…" aria-label="Search">
+        </form>
+        <a href="cart.html" class="cart-link">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <a href="login.html" class="login-link">Login</a>
+        <div class="profile-menu" style="display: none;">
+          <button id="profileButton" class="profile-button">
+            <img src="public/profile-avatar.svg" alt="" class="profile-avatar" id="profileAvatar">
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <a href="profile.html">My Profile</a>
+            <a href="orders.html">My Orders</a>
+            <button id="logoutButton">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="checkout-page">
+    <h1>Shipping Address</h1>
+    <p class="checkout-subtitle" style="color:var(--color-text-secondary); margin-bottom:var(--spacing-lg);">Enter a delivery address where we can safely deliver your order. We'll only use this for shipping and order updates.</p>
+
+    <div class="checkout-container">
+      <form id="shippingForm" class="shipping-form">
+        <div class="form-row">
+          <label for="fullName">Full name</label>
+          <input id="fullName" name="fullName" type="text" required aria-required="true" placeholder="e.g. Asha Rao" />
+        </div>
+
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required aria-required="true" placeholder="you@example.com" />
+        </div>
+
+        <div class="form-row">
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" type="tel" required aria-required="true" placeholder="+91 9XXXXXXXXX" />
+        </div>
+
+        <div class="form-row">
+          <label for="address1">Address line 1</label>
+          <input id="address1" name="address1" type="text" required aria-required="true" placeholder="Flat / House no, Building name" />
+        </div>
+
+        <div class="form-row">
+          <label for="address2">Address line 2 <small style="color:var(--color-text-muted); font-weight:400">(optional)</small></label>
+          <input id="address2" name="address2" type="text" placeholder="Landmark, Area" />
+        </div>
+
+        <div class="form-row">
+          <label for="city">City</label>
+          <input id="city" name="city" type="text" required />
+        </div>
+
+        <div class="form-row">
+          <label for="state">State / Province</label>
+          <input id="state" name="state" type="text" required />
+        </div>
+
+        <div class="form-row">
+          <label for="pincode">PIN / ZIP code</label>
+          <input id="pincode" name="pincode" type="text" required aria-required="true" placeholder="400001" />
+        </div>
+
+        <div class="form-row">
+          <label for="country">Country</label>
+          <input id="country" name="country" type="text" value="India" required />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-full">Confirm Shipping Address & Continue</button>
+          <a href="cart.html" class="btn btn-link">Back to Cart</a>
+        </div>
+        <div style="margin-top:var(--spacing-sm); font-size:0.9rem; color:var(--color-text-muted)">Secure checkout • We protect your data</div>
+      </form>
+
+      <aside class="order-summary">
+        <h2>Order Summary</h2>
+        <div id="summaryItems">Loading cart...</div>
+        <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">₹0.00</span></div>
+        <div class="summary-row"><span>Shipping</span><span id="summaryShipping">₹10.00</span></div>
+        <div class="summary-row total"><span>Total</span><span id="summaryTotal">₹0.00</span></div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Fitnest. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    // Page-specific logic: populate order summary and handle form submission
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Wait for script.js initialization (it may resolve images)
+      if (window.initializePage && typeof window.initializePage === 'function') {
+        try { await window.initializePage() } catch(e) { /* ignore */ }
+      }
+
+      const cart = JSON.parse(localStorage.getItem('fitnestCart')) || []
+      const summaryItems = document.getElementById('summaryItems')
+      if (!cart.length) {
+        summaryItems.innerHTML = '<p>Your cart is empty. <a href="products.html">Shop now</a></p>'
+      } else {
+        summaryItems.innerHTML = cart.map(i => `<div class="summary-item">${i.name} × ${i.quantity}</div>`).join('')
+      }
+
+      const subtotal = cart.reduce((s, it) => s + it.price * it.quantity, 0)
+      const shipping = 10
+      const total = subtotal + shipping
+
+      const format = (v) => {
+        try { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(v) } catch(e) { return '₹'+v.toFixed(2) }
+      }
+
+      document.getElementById('summarySubtotal').textContent = format(subtotal)
+      document.getElementById('summaryShipping').textContent = format(shipping)
+      document.getElementById('summaryTotal').textContent = format(total)
+
+      const form = document.getElementById('shippingForm')
+      form.addEventListener('submit',(e)=>{
+        e.preventDefault()
+        const data = {
+          fullName: document.getElementById('fullName').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          address1: document.getElementById('address1').value.trim(),
+          address2: document.getElementById('address2').value.trim(),
+          city: document.getElementById('city').value.trim(),
+          state: document.getElementById('state').value.trim(),
+          pincode: document.getElementById('pincode').value.trim(),
+          country: document.getElementById('country').value.trim(),
+        }
+
+        // basic validation
+        if (!data.fullName || !data.address1 || !data.city || !data.state || !data.pincode) {
+          alert('Please complete all required fields')
+          return
+        }
+
+        localStorage.setItem('fitnestShipping', JSON.stringify(data))
+        // generate a lightweight order id for confirmation
+        try {
+          const orderId = 'ORD' + Date.now().toString().slice(-8)
+          localStorage.setItem('fitnestOrderId', orderId)
+          try { sendEvent && sendEvent('shipping_saved', orderId, { orderId, shipping: data }) } catch (err) {}
+        } catch(e) { /* ignore */ }
+        // redirect to payment step (dummy page)
+        window.location.href = 'payment/payment.html'
+      })
+    })
+  </script>
+</body>
+</html>

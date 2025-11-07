@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment — Fitnest</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    header, footer {
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .payment-container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .payment-summary {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .payment-methods {
+      margin-top: 1.5rem;
+    }
+    .method {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 0.8rem;
+      cursor: pointer;
+      transition: 0.3s;
+      background-color: #fff;
+    }
+    .method:hover {
+      border-color: #000;
+      background-color: #fafafa;
+    }
+    .method input {
+      margin-right: 10px;
+    }
+    .btn-pay {
+      width: 100%;
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 1rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: background 0.3s;
+    }
+    .btn-pay:hover {
+      background: #333;
+    }
+    .processing {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <a href="index.html" class="logo">Fitnest</a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="products.html?category=men">Men</a>
+        <a href="products.html?category=women">Women</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-link">🛒</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="payment-container">
+      <h1>Choose Payment Method</h1>
+      <div class="payment-summary">
+        <p><strong>Order ID:</strong> <span id="orderId">—</span></p>
+        <p><strong>Total Amount:</strong> ₹<span id="totalAmount">0.00</span></p>
+      </div>
+
+      <form id="paymentForm">
+        <div class="payment-methods">
+          <label class="method">
+            <input type="radio" name="paymentMethod" value="UPI" checked>
+            <span>💸 UPI (Google Pay / PhonePe / Paytm)</span>
+          </label>
+          <label class="method">
+            <input type="radio" name="paymentMethod" value="Card">
+            <span>💳 Credit / Debit Card</span>
+          </label>
+          <label class="method">
+            <input type="radio" name="paymentMethod" value="NetBanking">
+            <span>🏦 Net Banking</span>
+          </label>
+          <label class="method">
+            <input type="radio" name="paymentMethod" value="COD">
+            <span>📦 Cash on Delivery</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-pay">Pay Now</button>
+        <div class="processing" id="processingMsg">Processing Payment... Please wait</div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Fitnest. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const total = params.get('total') || '0.00';
+      const totalAmountEl = document.getElementById('totalAmount');
+      const orderIdEl = document.getElementById('orderId');
+
+      totalAmountEl.textContent = total;
+      orderIdEl.textContent = localStorage.getItem('fitnestOrderId') || 'ORD000000';
+
+      const form = document.getElementById('paymentForm');
+      const processingMsg = document.getElementById('processingMsg');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const selected = form.paymentMethod.value;
+        processingMsg.style.display = 'block';
+
+        // simulate payment processing delay
+        setTimeout(() => {
+          // save payment info locally
+          localStorage.setItem('fitnestPayment', JSON.stringify({
+            method: selected,
+            total: total
+          }));
+          window.location.href = 'order-confirm.html';
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>

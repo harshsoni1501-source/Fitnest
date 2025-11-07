@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment — Fitnest</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">Fitnest</a>
+      <div class="header-actions">
+        <form id="siteSearchForm" class="site-search">
+          <input id="siteSearchInput" type="search" placeholder="Search products…" aria-label="Search">
+        </form>
+        <a href="../cart.html" class="cart-link">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <a href="../login.html" class="login-link">Login</a>
+        <div class="profile-menu" style="display: none;">
+          <button id="profileButton" class="profile-button">
+            <img src="../public/profile-avatar.svg" alt="" class="profile-avatar" id="profileAvatar">
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <a href="../profile.html">My Profile</a>
+            <a href="../orders.html">My Orders</a>
+            <button id="logoutButton">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="checkout-page">
+    <h1>Payment</h1>
+    <p class="checkout-subtitle" style="color:var(--color-text-secondary); margin-bottom:var(--spacing-lg);">This is a demo payment step. No real money will be charged.</p>
+
+    <div class="checkout-container">
+      <section class="shipping-form" style="width:100%">
+        <div class="form-row">
+          <label>Payment Method</label>
+          <div style="display:flex;gap:1rem;flex-wrap:nowrap">
+            <label style="display:flex;align-items:center;gap:0.5rem;white-space:nowrap">
+              <input type="radio" name="paymethod" value="card" checked>
+              <span>Credit/Debit Card</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;white-space:nowrap">
+              <input type="radio" name="paymethod" value="upi">
+              <span>UPI</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;white-space:nowrap">
+              <input type="radio" name="paymethod" value="cod">
+              <span>Cash on Delivery</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="cardFields">
+          <div class="form-row">
+            <label for="cardNumber">Card number</label>
+            <input id="cardNumber" type="text" placeholder="4111 1111 1111 1111" />
+          </div>
+          <div class="form-row" style="display:flex;gap:1rem">
+            <div style="flex:1">
+              <label for="cardExpiry">Expiry</label>
+              <input id="cardExpiry" type="text" placeholder="MM/YY" />
+            </div>
+            <div style="flex:1">
+              <label for="cardCVC">CVC</label>
+              <input id="cardCVC" type="text" placeholder="123" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button id="payNow" class="btn btn-primary btn-full">Pay Now</button>
+          <a href="../checkout.html" class="btn btn-link">Back to Shipping</a>
+        </div>
+      </section>
+
+      <aside class="order-summary">
+        <h2>Order Summary</h2>
+        <div id="summaryItems">Loading cart...</div>
+        <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">₹0.00</span></div>
+        <div class="summary-row"><span>Shipping</span><span id="summaryShipping">₹10.00</span></div>
+        <div class="summary-row total"><span>Total</span><span id="summaryTotal">₹0.00</span></div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Fitnest. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (window.initializePage && typeof window.initializePage === 'function') {
+        try { await window.initializePage() } catch(e) { /* ignore */ }
+      }
+
+      // Populate order summary
+      const cart = JSON.parse(localStorage.getItem('fitnestCart')) || []
+      const summaryItems = document.getElementById('summaryItems')
+      if (!cart.length) {
+        summaryItems.innerHTML = '<p>Your cart is empty. <a href="../products.html">Shop now</a></p>'
+      } else {
+        summaryItems.innerHTML = cart.map(i => `<div class="summary-item">${i.name} × ${i.quantity}</div>`).join('')
+      }
+
+      const subtotal = cart.reduce((s, it) => s + it.price * it.quantity, 0)
+      const shipping = 10
+      const total = subtotal + shipping
+      const format = (v) => {
+        try { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(v) } catch(e) { return '₹'+v.toFixed(2) }
+      }
+      document.getElementById('summarySubtotal').textContent = format(subtotal)
+      document.getElementById('summaryShipping').textContent = format(shipping)
+      document.getElementById('summaryTotal').textContent = format(total)
+
+      // Toggle card fields by method (simple demo)
+      const methodInputs = document.querySelectorAll('input[name="paymethod"]')
+      const cardFields = document.getElementById('cardFields')
+      methodInputs.forEach(r => r.addEventListener('change', () => {
+        cardFields.style.display = (document.querySelector('input[name="paymethod"]:checked').value === 'card') ? 'block' : 'none'
+      }))
+
+      // Handle dummy payment
+      document.getElementById('payNow').addEventListener('click', (e) => {
+        e.preventDefault()
+        // For demo: pretend payment succeeds after a brief delay
+        try { localStorage.setItem('fitnestPaymentStatus', 'success') } catch (e) {}
+        setTimeout(() => { window.location.href = '../order-success.html' }, 600)
+      })
+    })
+  </script>
+</body>
+</html>
+
+

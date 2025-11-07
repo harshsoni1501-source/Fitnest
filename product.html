@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product — Fitnest</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">Fitnest</a>
+            <nav class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="products.html?category=men">Men</a>
+                <a href="products.html?category=women">Women</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <div class="header-actions">
+                <form id="siteSearchForm" class="site-search">
+                    <input id="siteSearchInput" type="search" placeholder="Search products…" aria-label="Search">
+                </form>
+                <a href="cart.html" class="cart-link">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <a href="login.html" class="login-link">Login</a>
+                <div class="profile-menu" style="display: none;">
+                    <button id="profileButton" class="profile-button">
+                        <img src="public/profile-avatar.svg" alt="" class="profile-avatar" id="profileAvatar">
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="profile.html">My Profile</a>
+                        <a href="orders.html">My Orders</a>
+                        <button id="logoutButton">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="product-detail-page">
+        <a href="javascript:history.back()" class="back-link">← Back</a>
+        
+        <div class="product-detail" id="productDetail">
+            <!-- Product details will be inserted here -->
+        </div>
+
+        <!-- Related Products -->
+        <section class="related-section">
+            <h2>More from this Collection</h2>
+            <div class="products-grid" id="relatedProducts">
+                <!-- Related products will be inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Fitnest. All rights reserved.</p>
+            <div class="social-icons">
+                <a href="#" class="social-link">Instagram</a>
+                <a href="#" class="social-link">Twitter</a>
+                <a href="#" class="social-link">Pinterest</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
